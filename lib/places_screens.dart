@@ -60,8 +60,8 @@ class _PlacesScreenState extends State<PlacesScreen> {
   Future<Object?> getData() async {
     await Firebase.initializeApp();
     var ref = FirebaseDatabase.instance.ref();
-    final snp = ref.child("country").once().then((value) {
-      print(value.snapshot.value);
+    final snp = ref.child("country").get().then((DataSnapshot dataSnapshot) {
+      print(dataSnapshot.value); 
     });
 
     return snp;
