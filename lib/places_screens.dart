@@ -12,13 +12,6 @@ class PlacesScreen extends StatefulWidget {
 
 class _PlacesScreenState extends State<PlacesScreen> {
 
-  final ref = FirebaseDatabase.instance.ref();
-
-  @override
-  void initState() {
-    Firebase.initializeApp();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +33,19 @@ class _PlacesScreenState extends State<PlacesScreen> {
       ),
 
       body: FutureBuilder(
-        future: ref.child("country").get(),
+        future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if(snapshot.connectionState == ConnectionState.done) {
-            List countries = snapshot.data ?? [];
+           var countries = snapshot.data;
+            debugPrint(countries.toString());
             return ListView.builder(
-              itemCount: countries.length,
+              itemCount: 1,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(countries[index]["country"]),
-                  subtitle: Text(countries[index]["capital"]),
+                  // title: Text(countries[index]["country"]),
+                  // subtitle: Text(countries[index]["capital"]),
                 );
               }
             );
@@ -61,5 +55,16 @@ class _PlacesScreenState extends State<PlacesScreen> {
         }
       ),
     );
+  }
+
+  Future<Object?> getData() async {
+    await Firebase.initializeApp();
+    var ref = FirebaseDatabase.instance.ref();
+    final snp = ref.child("country").once().then((value) {
+      print(value.snapshot.value);
+    });
+
+    return snp;
+    
   }
 }
