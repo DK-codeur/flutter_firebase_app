@@ -19,11 +19,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
   Future<void> createCountry(String country, String capital) async {
     var uuid = const Uuid();
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Country/${uuid.v4()}");
-    await ref.set({
-      "country": country,
-      "capital": capital
-    });
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("country/${uuid.v4()}");
+    await ref.set({"country": country, "capital": capital});
   }
 
   @override
@@ -38,9 +36,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             children: [
               TextFormField(
                 controller: _countryController,
-                decoration: const InputDecoration(
-                  label: Text("Country")
-                ),
+                decoration: const InputDecoration(label: Text("Country")),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Enter a country";
@@ -48,14 +44,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                   return null;
                 },
               ),
-        
-              const SizedBox(height: 10,),
-        
+              const SizedBox(
+                height: 10,
+              ),
               TextFormField(
                 controller: _capitalController,
-                decoration: const InputDecoration(
-                  label: Text("Capital")
-                ),
+                decoration: const InputDecoration(label: Text("Capital")),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Enter a capital";
@@ -63,29 +57,32 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                   return null;
                 },
               ),
-        
-              const SizedBox(height: 20,),
-        
+              const SizedBox(
+                height: 20,
+              ),
               TextButton(
-                onPressed: _isLoading ? null : () {
-                  if (!_formKey.currentState!.validate()) {
-                    return;
-                  }
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
 
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  createCountry(_countryController.text, _capitalController.text).whenComplete(() {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    //todo:
-                  });
-                }, 
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        createCountry(_countryController.text,
+                                _capitalController.text)
+                            .whenComplete(() {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          //todo:
+                          Navigator.pop(context);
+                        });
+                      },
                 style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: Colors.blue
-                ),
+                    primary: Colors.white, backgroundColor: Colors.blue),
                 child: Text(_isLoading ? "Loading..." : "Add place"),
               )
             ],
