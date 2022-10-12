@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_firebase_project/places_screens.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPlaceScreen extends StatefulWidget {
@@ -72,13 +73,17 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                           _isLoading = true;
                         });
                         createCountry(_countryController.text,
-                                _capitalController.text)
+                                _capitalController.text,)
                             .whenComplete(() {
                           setState(() {
                             _isLoading = false;
                           });
-                          //todo:
-                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => const PlacesScreen()
+                            )
+                          );
                         });
                       },
                 style: TextButton.styleFrom(

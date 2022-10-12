@@ -32,9 +32,8 @@ class _PlacesScreenState extends State<PlacesScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.connectionState == ConnectionState.done) {
-              var countries = snapshot.data;
-              print(countries);
-              return ListView.builder(
+              List countries = snapshot.data ?? [];
+              return countries.isNotEmpty ? ListView.builder(
                   itemCount: countries.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
@@ -43,15 +42,17 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         subtitle: Text(countries[index]["capital"]),
                       ),
                     );
-                  });
-            } else {
-              return const Text("No data");
-            }
-          }),
+                  }
+              ) : const Center(child: Text("No country, click on << + >> to add"),);
+          } else {
+            return const Text("No data");
+          }
+        }
+      )
     );
   }
 
-  Future<dynamic> getData() async {
+  Future<List> getData() async {        
     await Firebase.initializeApp();
     var ref = FirebaseDatabase.instance.ref();
     final snp = await ref.child("country").get();
@@ -59,21 +60,10 @@ class _PlacesScreenState extends State<PlacesScreen> {
     List countries = [];
 
     if (snp.exists) {
-      print('DATA: ${snp.children}');
-
-      snp.children.forEach((data) {
-        print(data.value);
-
+      for (var data in snp.children) {
         countries.add(data.value);
-      });
+      }
     }
-
-    // print(countries);
-
-    //     .then((DataSnapshot dataSnapshot) {
-    //   print(dataSnapshot.value);
-    // });
-
     return countries;
   }
 }
